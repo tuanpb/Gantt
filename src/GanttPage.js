@@ -46,14 +46,11 @@ export default class Gantt extends Component {
                 return html
             },
             set_value: function (node, value, ev, sns) {
-                console.log(value)
                 node.querySelector(".editor_description").value = value || "";
                 node.querySelector(".editor_holders").value = "";
-                console.log('=====set_value', ev, sns);
             },
             get_value: function (node, ev) {
-                console.log('=====get_value', ev);
-                alert('PARENTID: ' + ev.parent + '\nTASK NAME: ' + node.querySelector(".editor_description").value)
+                // alert('PARENTID: ' + ev.parent + '\nTASK NAME: ' + node.querySelector(".editor_description").value)
                 return node.querySelector(".editor_description").value;
             },
             focus: function (node) {
@@ -67,6 +64,15 @@ export default class Gantt extends Component {
             { name: "description", height: 200, map_to: "text", type: "my_editor", focus: true },
             { name: "time", height: 72, type: "duration", map_to: "auto" }
         ];
+        gantt.attachEvent("onAfterTaskAdd", function (id, item) {
+            console.log('ADD ITEM: ', item)
+        });
+        gantt.attachEvent("onAfterTaskDelete", function (id, item) {
+            console.log('DELETE ITEM: ', item)
+        });
+        gantt.attachEvent("onAfterTaskUpdate", function (id, item) {
+            console.log('UPDATE ITEM: ', item)
+        });
         gantt.init(this.ganttContainer);
         gantt.parse(this.state.tasks);
         gantt.render();

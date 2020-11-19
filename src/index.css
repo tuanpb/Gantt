@@ -3,3 +3,23 @@ span {
   color: white;
   padding: 8px 16px;
 }
+
+.gantt_cal_lsection:first-child {
+  display: none;
+}
+
+.dhx_cal_ltext h3.titlee {
+  padding-left: 16px;
+  font-size: 23px;
+  margin: 16px 0;
+}
+
+.dhx_cal_ltext input,
+.dhx_cal_ltext select {
+  width: calc(50% - 24px);
+  height: 32px;
+  margin: 8px 8px 8px 16px !important;
+  padding: 0 8px !important;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}

@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import { gantt } from 'dhtmlx-gantt';
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
+import $ from 'jquery';
 
+let op = [
+    { value: '1', label: 'Chưa xử lí' },
+    { value: '2', label: 'Đang xử lí' },
+]
 export default class Gantt extends Component {
     constructor(props) {
         super(props)
@@ -23,47 +28,82 @@ export default class Gantt extends Component {
     }
     componentDidMount() {
         const options = [
-            { val: '1', label: 'Chưa xử lí' },
-            { val: '2', label: 'Đang xử lí' },
+            { label: 'tuan' },
+            { label: 'quan' }
         ]
-        gantt.form_blocks["my_editor"] = {
+        gantt.config.columns = [
+            { name: "text", label: "Task name", tree: true, width: '*' },
+            { name: "start_date", label: "Start time", align: "center" },
+            // { name: "duration", label: "Duration", align: "center" },
+            { name: "user", label: "Người xử lí", align: "center" },
+            // { name: "add", label: "" }
+        ];
+        gantt.form_blocks["multiselect"] = {
             render: function (sns) {
-                let html = ''
-                html += "<div class='dhx_cal_ltext'>"
-                html += "<h3 class='titlee'>Thêm mới công việc</h3>"
-                html += "<input class='editor_description' type='text' placeholder='TÊN CÔNG VIỆC'>"
-                html += "<input class='editor_holders' type='text' placeholder='NGƯỜI GIAO VIỆC'>"
-                html += "<input class='editor_holders' type='text' placeholder='ĐỘ ƯU TIÊN'>"
-                html += "<input class='editor_holders' type='text' placeholder='ĐỘ KHÓ'>"
-                html += "<select id='cars'>"
-                html += "<option value='0'>TRẠNG THÁI</option>"
-                for (var i = 0; i < options.length; i++) {
-                    html += "<option value='" + options[i].key + "'>" + options[i].label + "</option>";
+                var height = (sns.height || "23") + "px";
+                var html = "<div class='gantt_cal_ltext gantt_cal_chosen gantt_cal_multiselect'" +
+                    "style='height:" + height + ";'><select data-placeholder='...'" +
+                    "class='chosen-select' multiple>";
+                if (op) {
+                    console.log(op)
+                    for (var i = 0; i < op.length; i++) {
+                        if (sns.unassigned_value !== undefined && op[i].key === sns.unassigned_value) {
+                            continue;
+                        }
+                        html += "<option value='" + op[i].key + "'>" + op[i].label + "</option>";
+                    }
                 }
-                html += "</select>"
-                html += "<input class='editor_holders' type='text' placeholder='HẠN XỬ LÍ'>"
-                html += "</div>";
-                return html
+                html += "</select></div>";
+                return html;
             },
+
             set_value: function (node, value, ev, sns) {
-                node.querySelector(".editor_description").value = value || "";
-                node.querySelector(".editor_holders").value = "";
+                node.style.overflow = "visible";
+                node.parentNode.style.overflow = "visible";
+                node.style.display = "inline-block";
+                var select = $(node.firstChild);
+                debugger
+                if (value) {
+                    value = (value + "").split(",");
+                    select.val(value);
+                }
+                else {
+                    select.val([]);
+                }
+
+                // select.chosen();
+                if (sns.onchange) {
+                    select.change(function () {
+                        sns.onchange.call(this);
+                    })
+                }
+                select.trigger('chosen:updated');
+                select.trigger("change");
             },
+
             get_value: function (node, ev) {
-                // alert('PARENTID: ' + ev.parent + '\nTASK NAME: ' + node.querySelector(".editor_description").value)
-                return node.querySelector(".editor_description").value;
+                var value = $(node.firstChild).val();
+                //value = value ? value.join(",") : null
+                return value;
             },
+
             focus: function (node) {
-                // console.log('=====focus', node);
-                // var a = node.querySelector(".editor_description");
-                // a.select();
-                // a.focus();
+                $(node.firstChild).focus();
             }
         };
         gantt.config.lightbox.sections = [
-            { name: "description", height: 200, map_to: "text", type: "my_editor", focus: true },
-            { name: "time", height: 72, type: "duration", map_to: "auto" }
+            { name: "description", height: 38, map_to: "text", type: "textarea", focus: true },
+            {
+                name: "owner", height: 60, type: "multiselect", options: gantt.serverList("people"),
+                map_to: "owner_id", unassigned_value: 5
+            },
+            { name: "time", type: "duration", map_to: "auto" }
         ];
+
+        // gantt.config.lightbox.sections = [
+        //     { name: "description", height: 70, map_to: "text", type: "textarea", focus: true },
+        //     { name: "time", height: 72, map_to: "auto", type: "time" }
+        // ];
         gantt.attachEvent("onAfterTaskAdd", function (id, item) {
             console.log('ADD ITEM: ', item)
         });

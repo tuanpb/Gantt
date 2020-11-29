@@ -1,19 +1,20 @@
 import './App.css';
 import Gantt from './GanttPage';
+import Scheduler from './Scheduler';
 import React, { Component } from 'react';
 const data = {
     data: [
         {
             id: 4, text: "Project #2", start_date: "01-04-2018",
-            duration: 8, progress: 0.4, open: true
+            duration: 8, progress: 0.4, open: true, user: 'tuan'
         },
         {
             id: 5, text: "Task #1", start_date: "01-04-2018",
-            duration: 8, progress: 0.6, parent: 4
+            duration: 8, progress: 0.6, parent: 4, user: 'quan'
         },
         {
             id: 6, text: "Task #2", start_date: "11-04-2018",
-            duration: 8, progress: 0.6, parent: 4
+            duration: 8, progress: 0.6, parent: 4, user: 'kien'
         }
     ],
     links: [
@@ -22,34 +23,10 @@ const data = {
     ]
 }
 
-const dataChange = {
-    data: [
-        {
-            id: 1, text: "Project TEST", start_date: "01-04-2018",
-            duration: 8, progress: 0.4, open: true
-        },
-        {
-            id: 2, text: "Task #1", start_date: "01-04-2018",
-            duration: 8, progress: 0.6, parent: 1
-        },
-        {
-            id: 3, text: "Task #2", start_date: "11-04-2018",
-            duration: 8, progress: 0.6, parent: 1
-        },
-        {
-            id: 4, text: "Project TEST2", start_date: "01-04-2018",
-            duration: 18, progress: 0.4, open: true
-        },
-        {
-            id: 2, text: "Project TEST3", start_date: "02-04-2018",
-            duration: 8, progress: 0.6, open: true
-        }
-    ],
-    links: [
-        { id: 1, source: 1, target: 2, type: "1" },
-        { id: 2, source: 2, target: 3, type: "0" }
-    ]
-}
+const dataScheduler = [
+    { start_date: '2020-11-27 6:00', end_date: '2020-11-27 8:00', text: 'Ca 1', id: 1, member: ['Nguyễn Văn An(03486886)', 'Trần thị Xuyên(09875476)'], color: 'blue' },
+    { start_date: '2020-11-23 10:00', end_date: '2020-11-23 18:00', text: 'Ca 2', id: 2, member: ['Phan Binh Tuan(0462463932)', 'Nguyễn Văn Quân(098574368)'], color: 'green' }
+];
 
 class App extends Component {
     constructor(props) {
@@ -59,19 +36,15 @@ class App extends Component {
         }
     }
 
-    handleChangeData = () => {
-        this.setState({
-            tasks: dataChange
-        })
-    }
-
     render() {
         return (
             <div className="App" >
-                {/* <span onClick={this.handleChangeData}>Change Data</span> */}
-                <Gantt
+                {/* <Gantt
                     tasks={this.state.tasks}
-                />
+                /> */}
+                <div className='scheduler-container' style={{ width: '100%', height: '100vh' }}>
+                    <Scheduler events={dataScheduler} />
+                </div>
             </div>
         );
     }
